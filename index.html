@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Menú Digital Moderno</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.12.2/firebase-app-compat.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.12.2/firebase-firestore-compat.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+  color: #2d3748;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  min-height: 100vh;
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.1);
+}
+
+header {
+  background: linear-gradient(135deg, #ff6b6b, #ee5a24, #ff9ff3, #54a0ff);
+  background-size: 400% 400%;
+  animation: gradientShift 8s ease infinite;
+  color: white;
+  padding: 2rem 1rem;
+  text-align: center;
+  position: relative;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+header h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  letter-spacing: -0.02em;
+}
+
+header p {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  font-weight: 300;
+}
+
+.admin-btn {
+  position: absolute;
+  right: 1rem;
+  top: 1rem;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  padding: 0.7rem 1.2rem;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+}
+
+.admin-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.search-section {
+  padding: 2rem 1rem;
+  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1), transparent);
+}
+
+.search-bar {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.search-bar input {
+  width: 90%;
+  max-width: 500px;
+  padding: 1rem 1.5rem;
+  border-radius: 25px;
+  border: 2px solid transparent;
+  background: white;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  font-size: 1.1rem;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.search-bar input:focus {
+  border-color: #ff6b6b;
+  box-shadow: 0 8px 40px rgba(255, 107, 107, 0.2);
+  transform: translateY(-2px);
+}
+
+.search-bar input::placeholder {
+  color: #a0aec0;
+}
+
+.filters {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+}
+
+.filters button {
+  padding: 0.8rem 1.5rem;
+  border-radius: 30px;
+  border: 2px solid transparent;
+  background: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: #4a5568;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.filters button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  transition: left 0.5s;
+}
+
+.filters button:hover::before {
+  left: 100%;
+}
+
+.filters button.active {
+  background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+  transform: translateY(-2px);
+}
+
+.filters button:hover:not(.active) {
+  background: #f7fafc;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+.menu {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+  padding: 2rem 1rem;
+}
+
+.card {
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  cursor: pointer;
+  position: relative;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(84, 160, 255, 0.1));
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.card:hover::before {
+  opacity: 1;
+}
+
+.card:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+}
+
+.card-image {
+  position: relative;
+  overflow: hidden;
+  height: 200px;
+}
+
+.card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s ease;
+}
+
+.card:hover img {
+  transform: scale(1.1);
+}
+
+.card-body {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.card-title {
+  font-size: 1.3rem;
+  margin: 0;
+  font-weight: 600;
+  color: #2d3748;
+  line-height: 1.3;
+}
+
+.card-price {
+  color: #ff6b6b;
+  font-weight: 700;
+  font-size: 1.4rem;
+}
+
+.card-category {
+  color: #718096;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-transform: capitalize;
+  background: #f7fafc;
+  padding: 0.3rem 0.8rem;
+  border-radius: 12px;
+  display: inline-block;
+  width: fit-content;
+}
+
+.admin-controls {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.edit-btn {
+  flex: 1;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border: none;
+  color: white;
+  padding: 0.7rem;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.edit-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.edit-btn.delete {
+  background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+}
+
+.edit-btn.delete:hover {
+  box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+}
+
+#adminPanel {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(5px);
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+#adminPanel form {
+  background: white;
+  padding: 2rem;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+#adminPanel h3 {
+  margin-bottom: 1rem;
+  color: #2d3748;
+  font-size: 1.5rem;
+  text-align: center;
+  font-weight: 600;
+}
+
+#adminPanel input, #adminPanel select {
+  padding: 1rem;
+  font-size: 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+#adminPanel input:focus, #adminPanel select:focus {
+  border-color: #ff6b6b;
+  box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
+}
+
+#adminPanel button {
+  padding: 1rem;
+  font-size: 1rem;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  border: none;
+}
+
+#adminPanel button[type="submit"] {
+  background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+  color: white;
+}
+
+#adminPanel button[type="submit"]:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+}
+
+#adminPanel button[type="button"] {
+  background: #f7fafc;
+  color: #4a5568;
+  border: 2px solid #e2e8f0;
+}
+
+#adminPanel button[type="button"]:hover {
+  background: #edf2f7;
+  transform: translateY(-1px);
+}
+
+.empty-state {
+  text-align: center;
+  padding: 3rem;
+  color: #718096;
+}
+
+.empty-state h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #ff6b6b;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+  header h1 {
+    font-size: 2rem;
+  }
+  
+  .admin-btn {
+    right: 0.5rem;
+    top: 0.5rem;
+    padding: 0.5rem 1rem;
+  }
+  
+  .menu {
+    grid-template-columns: 1fr;
+    padding: 1rem 0.5rem;
+  }
+  
+  .search-section {
+    padding: 1.5rem 0.5rem;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <h1>🍽️ Menú Digital</h1>
+    <p>Descubre nuestros deliciosos platos</p>
+    <button class="admin-btn" onclick="loginAdmin()">👤 Admin</button>
+  </header>
+
+  <div class="search-section">
+    <div class="search-bar">
+      <input type="text" id="search" placeholder="🔍 Buscar platos deliciosos...">
+    </div>
+    <div class="filters" id="filters"></div>
+  </div>
+
+  <div class="menu" id="menu">
+    <div class="loading">
+      <div class="spinner"></div>
+    </div>
+  </div>
+</div>
+
+<div id="adminPanel">
+  <form onsubmit="guardarPlato(event)">
+    <h3>✨ Agregar/Editar Plato</h3>
+    <input type="text" id="nombre" placeholder="Nombre del plato" required>
+    <input type="number" id="precio" placeholder="Precio" step="0.01" required>
+    <input type="text" id="categoria" placeholder="Categoría (ej: entradas, platos principales)" required>
+    <input type="url" id="imagen" placeholder="URL de la imagen" required>
+    <button type="submit">💾 Guardar Plato</button>
+    <button type="button" onclick="togglePanel()">❌ Cancelar</button>
+  </form>
+</div>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyAqywnaj_kA_erHjKxHx93aeWtNEzMqPEE",
+  authDomain: "menu-restaurante-73cce.firebaseapp.com",
+  projectId: "menu-restaurante-73cce"
+};
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+let isAdmin = false;
+let editId = null;
+const menuDiv = document.getElementById('menu');
+const filtersDiv = document.getElementById('filters');
+const searchInput = document.getElementById('search');
+const adminPanel = document.getElementById('adminPanel');
+
+function togglePanel(){
+  if(adminPanel.style.display === 'flex') {
+    adminPanel.style.display = 'none';
+    clearForm();
+  } else {
+    adminPanel.style.display = 'flex';
+    setTimeout(() => document.getElementById('nombre').focus(), 100);
+  }
+}
+
+function clearForm() {
+  document.getElementById('nombre').value = '';
+  document.getElementById('precio').value = '';
+  document.getElementById('categoria').value = '';
+  document.getElementById('imagen').value = '';
+  editId = null;
+}
+
+function loginAdmin(){
+  const pass = prompt("🔐 Ingresa la contraseña de administrador:");
+  if(pass === '1234'){ 
+    isAdmin = true; 
+    togglePanel(); 
+    mostrarPlatos();
+    alert("✅ Acceso de administrador activado");
+  } else if(pass) {
+    alert("❌ Contraseña incorrecta");
+  }
+}
+
+async function guardarPlato(e){
+  e.preventDefault();
+  
+  const nombre = document.getElementById('nombre').value.trim();
+  const precio = parseFloat(document.getElementById('precio').value);
+  const categoria = document.getElementById('categoria').value.trim().toLowerCase();
+  const imagen = document.getElementById('imagen').value.trim();
+  
+  if(!nombre || !precio || !categoria || !imagen) {
+    alert("❌ Por favor completa todos los campos");
+    return;
+  }
+  
+  try {
+    if(editId){
+      await db.collection('platos').doc(editId).update({nombre, precio, categoria, imagen});
+    } else { 
+      await db.collection('platos').add({nombre, precio, categoria, imagen});
+    }
+    
+    togglePanel();
+    alert(editId ? "✅ Plato actualizado correctamente" : "✅ Plato agregado correctamente");
+  } catch (error) {
+    console.error("Error:", error);
+    alert("❌ Error al guardar el plato");
+  }
+}
+
+async function mostrarPlatos(){
+  menuDiv.innerHTML = '<div class="loading"><div class="spinner"></div></div>';
+  filtersDiv.innerHTML = "";
+  
+  try {
+    const snapshot = await db.collection('platos').orderBy('categoria').get();
+    const categorias = new Set(["all"]);
+    const platos = [];
+    
+    snapshot.forEach(doc => {
+      const p = doc.data();
+      p.id = doc.id;
+      platos.push(p);
+      categorias.add(p.categoria);
+    });
+    
+    // Crear botones de filtro
+    categorias.forEach(cat => {
+      const btn = document.createElement('button');
+      btn.textContent = cat === 'all' ? '🍽️ Todo' : `${getCategoryEmoji(cat)} ${cat.charAt(0).toUpperCase() + cat.slice(1)}`;
+      btn.dataset.cat = cat;
+      if(cat === 'all') btn.classList.add('active');
+      
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filters button').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        renderPlatos(platos, cat, searchInput.value);
+      });
+      
+      filtersDiv.appendChild(btn);
+    });
+    
+    renderPlatos(platos);
+  } catch (error) {
+    console.error("Error:", error);
+    menuDiv.innerHTML = '<div class="empty-state"><h3>❌ Error al cargar el menú</h3></div>';
+  }
+}
+
+function getCategoryEmoji(categoria) {
+  const emojis = {
+    'entradas': '🥗',
+    'platos principales': '🍽️',
+    'principales': '🍽️',
+    'postres': '🍰',
+    'bebidas': '🥤',
+    'ensaladas': '🥗',
+    'sopas': '🍲',
+    'carnes': '🥩',
+    'pescados': '🐟',
+    'vegetariano': '🌱',
+    'pasta': '🍝',
+    'pizza': '🍕'
+  };
+  return emojis[categoria.toLowerCase()] || '🍴';
+}
+
+function renderPlatos(platos, filtro = "all", busqueda = ""){
+  if(platos.length === 0) {
+    menuDiv.innerHTML = '<div class="empty-state"><h3>🍽️ No hay platos disponibles</h3><p>Los administradores pueden agregar platos al menú</p></div>';
+    return;
+  }
+  
+  const platosFiltrados = platos.filter(p => {
+    const matchCat = filtro === 'all' || p.categoria === filtro;
+    const matchSearch = p.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
+                       p.categoria.toLowerCase().includes(busqueda.toLowerCase());
+    return matchCat && matchSearch;
+  });
+  
+  if(platosFiltrados.length === 0) {
+    menuDiv.innerHTML = '<div class="empty-state"><h3>🔍 No se encontraron resultados</h3><p>Intenta con otros términos de búsqueda</p></div>';
+    return;
+  }
+  
+  menuDiv.innerHTML = "";
+  
+  platosFiltrados.forEach(p => {
+    const card = document.createElement('div');
+    card.classList.add('card');
+    
+    card.innerHTML = `
+      <div class="card-image">
+        <img src="${p.imagen}" alt="${p.nombre}" onerror="this.src='https://via.placeholder.com/400x200/ff6b6b/white?text=🍽️+Sin+Imagen'">
+      </div>
+      <div class="card-body">
+        <h3 class="card-title">${p.nombre}</h3>
+        <div class="card-price">$${p.precio.toFixed(2)}</div>
+        <span class="card-category">${getCategoryEmoji(p.categoria)} ${p.categoria}</span>
+        ${isAdmin ? `
+        <div class="admin-controls">
+          <button class="edit-btn" onclick="editarPlato('${p.id}')">✏️ Editar</button>
+          <button class="edit-btn delete" onclick="borrarPlato('${p.id}')">🗑️ Borrar</button>
+        </div>` : ''}
+      </div>`;
+    
+    menuDiv.appendChild(card);
+  });
+}
+
+async function editarPlato(id){
+  try {
+    editId = id;
+    const doc = await db.collection('platos').doc(id).get();
+    const p = doc.data();
+    
+    document.getElementById('nombre').value = p.nombre;
+    document.getElementById('precio').value = p.precio;
+    document.getElementById('categoria').value = p.categoria;
+    document.getElementById('imagen').value = p.imagen;
+    
+    togglePanel();
+  } catch (error) {
+    console.error("Error:", error);
+    alert("❌ Error al cargar el plato");
+  }
+}
+
+async function borrarPlato(id){
+  if(confirm("🗑️ ¿Estás seguro de que quieres eliminar este plato?")){ 
+    try {
+      await db.collection('platos').doc(id).delete();
+      alert("✅ Plato eliminado correctamente");
+    } catch (error) {
+      console.error("Error:", error);
+      alert("❌ Error al eliminar el plato");
+    }
+  }
+}
+
+// Búsqueda en tiempo real
+let searchTimeout;
+searchInput.addEventListener('input', e => {
+  clearTimeout(searchTimeout);
+  searchTimeout = setTimeout(() => {
+    const filtroActivo = document.querySelector('.filters button.active')?.dataset.cat || "all";
+    mostrarPlatosFiltrada(filtroActivo, e.target.value);
+  }, 300);
+});
+
+async function mostrarPlatosFiltrada(filtro, busqueda){
+  try {
+    const snapshot = await db.collection('platos').get();
+    const platos = [];
+    snapshot.forEach(doc => {
+      const p = doc.data();
+      p.id = doc.id;
+      platos.push(p);
+    });
+    renderPlatos(platos, filtro, busqueda);
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
+
+// Listener para cambios en tiempo real
+db.collection('platos').onSnapshot(() => mostrarPlatos(), error => {
+  console.error("Error:", error);
+});
+
+// Cerrar panel con Escape
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape' && adminPanel.style.display === 'flex') {
+    togglePanel();
+  }
+});
+
+// Inicializar
+mostrarPlatos();
+</script>
+</body>
+</html>
