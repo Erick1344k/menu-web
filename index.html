@@ -6,7 +6,7 @@
 <title>Menú Digital Moderno</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.12.2/firebase-app-compat.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/10.12.2/firebase-firestore-compat.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 * {
   margin: 0;
@@ -16,76 +16,69 @@
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #1a1a1a;
   min-height: 100vh;
-  color: #2d3748;
+  color: #e0e0e0;
 }
 
 .container {
   max-width: 1200px;
   margin: 0 auto;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(20px);
+  background: rgba(30, 30, 30, 0.95);
+  backdrop-filter: blur(10px);
   min-height: 100vh;
-  box-shadow: 0 0 50px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
 }
 
 header {
-  background: linear-gradient(135deg, #ff6b6b, #ee5a24, #ff9ff3, #54a0ff);
-  background-size: 400% 400%;
-  animation: gradientShift 8s ease infinite;
-  color: white;
-  padding: 2rem 1rem;
+  background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1515003197210-e0cd71810b5f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80') center/cover no-repeat;
+  color: #fff;
+  padding: 4rem 1rem;
   text-align: center;
   position: relative;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-}
-
-@keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
 }
 
 header h1 {
-  font-size: 2.5rem;
+  font-family: 'Playfair Display', serif;
+  font-size: 3rem;
   font-weight: 700;
   margin-bottom: 0.5rem;
-  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  letter-spacing: -0.02em;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+  letter-spacing: 0.05em;
 }
 
 header p {
-  font-size: 1.1rem;
-  opacity: 0.9;
+  font-size: 1.2rem;
+  opacity: 0.85;
   font-weight: 300;
 }
 
 .admin-btn {
   position: absolute;
-  right: 1rem;
-  top: 1rem;
-  background: rgba(255, 255, 255, 0.2);
+  right: 1.5rem;
+  top: 1.5rem;
+  background: rgba(255, 255, 255, 0.15);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: white;
-  padding: 0.7rem 1.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  padding: 0.8rem 1.5rem;
   border-radius: 12px;
   cursor: pointer;
   font-weight: 500;
   transition: all 0.3s ease;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
 }
 
 .admin-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.25);
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
 }
 
 .search-section {
   padding: 2rem 1rem;
-  background: linear-gradient(to bottom, rgba(255, 255, 255, 0.1), transparent);
+  background: linear-gradient(to bottom, rgba(30, 30, 30, 0.2), transparent);
 }
 
 .search-bar {
@@ -100,16 +93,17 @@ header p {
   padding: 1rem 1.5rem;
   border-radius: 25px;
   border: 2px solid transparent;
-  background: white;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.1);
+  color: #e0e0e0;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
   font-size: 1.1rem;
   transition: all 0.3s ease;
   outline: none;
 }
 
 .search-bar input:focus {
-  border-color: #ff6b6b;
-  box-shadow: 0 8px 40px rgba(255, 107, 107, 0.2);
+  border-color: #d4a017;
+  box-shadow: 0 8px 40px rgba(212, 160, 23, 0.2);
   transform: translateY(-2px);
 }
 
@@ -128,13 +122,13 @@ header p {
   padding: 0.8rem 1.5rem;
   border-radius: 30px;
   border: 2px solid transparent;
-  background: white;
+  background: rgba(255, 255, 255, 0.1);
+  color: #e0e0e0;
   cursor: pointer;
   transition: all 0.3s ease;
   font-weight: 500;
   font-size: 0.95rem;
-  color: #4a5568;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   position: relative;
   overflow: hidden;
 }
@@ -146,7 +140,7 @@ header p {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
   transition: left 0.5s;
 }
 
@@ -155,17 +149,17 @@ header p {
 }
 
 .filters button.active {
-  background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-  color: white;
+  background: linear-gradient(135deg, #d4a017, #a17f12);
+  color: #fff;
   border-color: transparent;
-  box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+  box-shadow: 0 8px 25px rgba(212, 160, 23, 0.3);
   transform: translateY(-2px);
 }
 
 .filters button:hover:not(.active) {
-  background: #f7fafc;
+  background: rgba(255, 255, 255, 0.2);
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
 }
 
 .menu {
@@ -176,14 +170,14 @@ header p {
 }
 
 .card {
-  background: white;
+  background: rgba(40, 40, 40, 0.95);
   border-radius: 20px;
   overflow: hidden;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   cursor: pointer;
   position: relative;
-  border: 1px solid rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .card::before {
@@ -193,7 +187,7 @@ header p {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(135deg, rgba(255, 107, 107, 0.1), rgba(84, 160, 255, 0.1));
+  background: linear-gradient(135deg, rgba(212, 160, 23, 0.1), rgba(84, 160, 255, 0.1));
   opacity: 0;
   transition: opacity 0.3s ease;
   pointer-events: none;
@@ -205,7 +199,7 @@ header p {
 
 .card:hover {
   transform: translateY(-10px) scale(1.02);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
 }
 
 .card-image {
@@ -233,25 +227,26 @@ header p {
 }
 
 .card-title {
-  font-size: 1.3rem;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem;
   margin: 0;
   font-weight: 600;
-  color: #2d3748;
+  color: #e0e0e0;
   line-height: 1.3;
 }
 
 .card-price {
-  color: #ff6b6b;
+  color: #d4a017;
   font-weight: 700;
   font-size: 1.4rem;
 }
 
 .card-category {
-  color: #718096;
+  color: #a0aec0;
   font-size: 0.9rem;
   font-weight: 500;
   text-transform: capitalize;
-  background: #f7fafc;
+  background: rgba(255, 255, 255, 0.05);
   padding: 0.3rem 0.8rem;
   border-radius: 12px;
   display: inline-block;
@@ -268,7 +263,7 @@ header p {
   flex: 1;
   background: linear-gradient(135deg, #667eea, #764ba2);
   border: none;
-  color: white;
+  color: #fff;
   padding: 0.7rem;
   border-radius: 10px;
   font-size: 0.9rem;
@@ -297,7 +292,7 @@ header p {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.8);
   backdrop-filter: blur(5px);
   align-items: center;
   justify-content: center;
@@ -311,7 +306,7 @@ header p {
 }
 
 #adminPanel form {
-  background: white;
+  background: rgba(40, 40, 40, 0.95);
   padding: 2rem;
   border-radius: 20px;
   width: 90%;
@@ -319,7 +314,7 @@ header p {
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
   animation: slideUp 0.3s ease;
 }
 
@@ -330,7 +325,7 @@ header p {
 
 #adminPanel h3 {
   margin-bottom: 1rem;
-  color: #2d3748;
+  color: #e0e0e0;
   font-size: 1.5rem;
   text-align: center;
   font-weight: 600;
@@ -339,15 +334,17 @@ header p {
 #adminPanel input, #adminPanel select {
   padding: 1rem;
   font-size: 1rem;
-  border: 2px solid #e2e8f0;
+  border: 2px solid rgba(255, 255, 255, 0.1);
   border-radius: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #e0e0e0;
   transition: all 0.3s ease;
   outline: none;
 }
 
 #adminPanel input:focus, #adminPanel select:focus {
-  border-color: #ff6b6b;
-  box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.1);
+  border-color: #d4a017;
+  box-shadow: 0 0 0 3px rgba(212, 160, 23, 0.1);
 }
 
 #adminPanel button {
@@ -361,30 +358,30 @@ header p {
 }
 
 #adminPanel button[type="submit"] {
-  background: linear-gradient(135deg, #ff6b6b, #ee5a24);
-  color: white;
+  background: linear-gradient(135deg, #d4a017, #a17f12);
+  color: #fff;
 }
 
 #adminPanel button[type="submit"]:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(255, 107, 107, 0.3);
+  box-shadow: 0 8px 25px rgba(212, 160, 23, 0.3);
 }
 
 #adminPanel button[type="button"] {
-  background: #f7fafc;
-  color: #4a5568;
-  border: 2px solid #e2e8f0;
+  background: rgba(255, 255, 255, 0.05);
+  color: #e0e0e0;
+  border: 2px solid rgba(255, 255, 255, 0.1);
 }
 
 #adminPanel button[type="button"]:hover {
-  background: #edf2f7;
+  background: rgba(255, 255, 255, 0.1);
   transform: translateY(-1px);
 }
 
 .empty-state {
   text-align: center;
   padding: 3rem;
-  color: #718096;
+  color: #a0aec0;
 }
 
 .empty-state h3 {
@@ -403,8 +400,8 @@ header p {
 .spinner {
   width: 40px;
   height: 40px;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #ff6b6b;
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-top: 4px solid #d4a017;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -416,7 +413,7 @@ header p {
 
 @media (max-width: 768px) {
   header h1 {
-    font-size: 2rem;
+    font-size: 2.2rem;
   }
   
   .admin-btn {
@@ -437,10 +434,9 @@ header p {
 </style>
 </head>
 <body>
-
 <div class="container">
   <header>
-    <h1>🍽️ Entre Mar y Tiera </h1>
+    <h1>🍽️ Entre Mar y Tierra</h1>
     <p>Descubre nuestros deliciosos platos</p>
     <button class="admin-btn" onclick="loginAdmin()">👤 Admin</button>
   </header>
@@ -629,7 +625,7 @@ function renderPlatos(platos, filtro = "all", busqueda = ""){
     
     card.innerHTML = `
       <div class="card-image">
-        <img src="${p.imagen}" alt="${p.nombre}" onerror="this.src='https://via.placeholder.com/400x200/ff6b6b/white?text=🍽️+Sin+Imagen'">
+        <img src="${p.imagen}" alt="${p.nombre}" onerror="this.src='https://via.placeholder.com/400x200/1a1a1a/e0e0e0?text=🍽️+Sin+Imagen'">
       </div>
       <div class="card-body">
         <h3 class="card-title">${p.nombre}</h3>
@@ -676,7 +672,6 @@ async function borrarPlato(id){
   }
 }
 
-// Búsqueda en tiempo real
 let searchTimeout;
 searchInput.addEventListener('input', e => {
   clearTimeout(searchTimeout);
@@ -701,19 +696,16 @@ async function mostrarPlatosFiltrada(filtro, busqueda){
   }
 }
 
-// Listener para cambios en tiempo real
 db.collection('platos').onSnapshot(() => mostrarPlatos(), error => {
   console.error("Error:", error);
 });
 
-// Cerrar panel con Escape
 document.addEventListener('keydown', e => {
   if(e.key === 'Escape' && adminPanel.style.display === 'flex') {
     togglePanel();
   }
 });
 
-// Inicializar
 mostrarPlatos();
 </script>
 </body>
